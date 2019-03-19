@@ -25733,17 +25733,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.useForm = useForm;
 exports.useField = useField;
-exports.useValidate = useValidate;
 
 var _react = require("react");
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -25753,93 +25748,87 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function useForm(onSubmit) {
-  console.log(_react.useState);
+var noop = function noop() {};
 
-  var _useState = (0, _react.useState)({}),
+function useForm(onSubmit, _ref, initialValues) {
+  var validate = _ref.validate,
+      warn = _ref.warn;
+
+  var _useState = (0, _react.useState)(initialValues),
       _useState2 = _slicedToArray(_useState, 2),
-      allInputs = _useState2[0],
-      setInputs = _useState2[1];
+      values = _useState2[0],
+      setValues = _useState2[1];
 
-  var fields = {};
-  return {
-    form: {
-      registerField: function registerField(fieldName, field) {
-        // setInputs({
-        //   ...allInputs,
-        //   fieldName: input
-        // });
-        fields[fieldName] = field;
-      }
-    },
-    handleSubmit: function handleSubmit(e) {
-      Object.entries(fields).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            name = _ref2[0],
-            field = _ref2[1];
-      });
-      e.preventDefault();
-      var errors = Object.entries(fields).reduce(function (acc, _ref3) {
-        var _ref4 = _slicedToArray(_ref3, 2),
-            name = _ref4[0],
-            field = _ref4[1];
-
-        console.log(field.suportMethods.forceValidation());
-        return [].concat(_toConsumableArray(acc), _toConsumableArray(field.suportMethods.forceValidation()));
-      }, []);
-      console.log(errors);
-      !errors.length && onSubmit && onSubmit();
-    }
-  };
-}
-
-function useField(fieldName, form, validate) {
-  var _useState3 = (0, _react.useState)(''),
+  var _useState3 = (0, _react.useState)(validate(values)),
       _useState4 = _slicedToArray(_useState3, 2),
-      value = _useState4[0],
-      setValue = _useState4[1];
+      errors = _useState4[0],
+      setErrors = _useState4[1];
 
-  var _useState5 = (0, _react.useState)(false),
+  var _useState5 = (0, _react.useState)(warn(values)),
       _useState6 = _slicedToArray(_useState5, 2),
-      touched = _useState6[0],
-      setTouched = _useState6[1];
+      warnings = _useState6[0],
+      setWarnings = _useState6[1];
 
-  var input = {
-    name: fieldName,
-    onChange: function onChange(e) {
-      setValue(e.target.value);
-    },
-    onFocus: function onFocus(e) {
-      setTouched(true);
-    },
-    value: value
-  };
-  var suportMethods = {
-    forceValidation: function forceValidation() {
-      return useValidate(value, validate);
+  var _useState7 = (0, _react.useState)({
+    touched: false,
+    valid: true
+  }),
+      _useState8 = _slicedToArray(_useState7, 2),
+      state = _useState8[0],
+      setState = _useState8[1];
+
+  function changeField(fieldName, newValue) {
+    var newValues = _objectSpread({}, values, _defineProperty({}, fieldName, newValue));
+
+    setValues(newValues);
+    var errors = validate(newValues);
+    setErrors(errors);
+    setWarnings(warn(newValues));
+  }
+
+  function changeFieldFocus(fieldName, isFocused) {
+    if (isFocused) {
+      setState(_objectSpread({}, state, {
+        touched: true
+      }));
     }
+  }
+
+  var form = {
+    changeField: changeField,
+    changeFieldFocus: changeFieldFocus,
+    initialValues: initialValues,
+    values: values,
+    errors: errors,
+    warnings: warnings,
+    state: state
   };
-  form.registerField(fieldName, {
-    input: input,
-    suportMethods: suportMethods
-  });
-
-  var _useValidate = useValidate(value, validate),
-      _useValidate2 = _slicedToArray(_useValidate, 1),
-      errors = _useValidate2[0];
-
   return {
-    input: input,
-    states: {
-      touched: touched,
-      hasErrors: !!errors.length
-    },
-    errors: errors
+    form: form,
+    handleSubmit: noop,
+    values: values,
+    errors: errors,
+    state: state
   };
 }
 
-function useValidate(value, validateFunction) {
-  return [validateFunction(value) || []];
+function useField(fieldName, form) {
+  return {
+    input: {
+      onChange: function onChange(e) {
+        form.changeField(fieldName, e.target.value);
+      },
+      onFocus: function onFocus(e) {
+        form.changeFieldFocus(fieldName, true);
+      },
+      onBlur: function onBlur(e) {
+        form.changeFieldFocus(fieldName, false);
+      },
+      value: form.values[fieldName]
+    },
+    errors: form.errors[fieldName],
+    warnings: form.warnings[fieldName]
+  };
 }
 },{"react":"../node_modules/react/index.js"}],"Forms/UserContactForm.js":[function(require,module,exports) {
 "use strict";
@@ -25859,21 +25848,39 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // code related to a specific form goes here, using the imported generic Form component
 // see the SINGLE IMPLEMENTATION section for details
+var required = function required(v) {
+  return v ? null : 'required';
+};
+
 var UserContactForm = function UserContactForm() {
-  var _useForm = (0, _FormHooks.useForm)(function () {
-    console.log('it works');
+  console.log('render');
+
+  var _useForm = (0, _FormHooks.useForm)(function () {}, {
+    validate: function validate(values) {
+      return {
+        firstName: [required(values.firstName)],
+        lastName: [required(values.lastName)]
+      };
+    },
+    warn: function warn(values) {
+      return [required(values.firstName), required(values.lastName)].filter(function (e) {
+        return !!e;
+      });
+    }
+  }, {
+    firstName: 'lol',
+    lastName: 'boo'
   }),
       form = _useForm.form,
-      handleSubmit = _useForm.handleSubmit;
+      handleSubmit = _useForm.handleSubmit,
+      values = _useForm.values,
+      state = _useForm.state;
 
-  var firstNameField = (0, _FormHooks.useField)('firstName', form, function (value) {
-    return !value ? ['required'] : null;
-  });
+  var firstNameField = (0, _FormHooks.useField)('firstName', form);
+  var lastNameField = (0, _FormHooks.useField)('lastName', form);
   return _react.default.createElement("form", {
     onSubmit: handleSubmit
-  }, _react.default.createElement("input", firstNameField.input), _react.default.createElement("pre", null, JSON.stringify(firstNameField.states, undefined, 2)), firstNameField.errors.map(function (v) {
-    return v;
-  }));
+  }, _react.default.createElement("input", firstNameField.input), _react.default.createElement("input", firstNameField.input), _react.default.createElement("pre", null, JSON.stringify(firstNameField.states, undefined, 2)), _react.default.createElement("input", lastNameField.input), _react.default.createElement("pre", null, JSON.stringify(lastNameField.states, undefined, 2)), _react.default.createElement("pre", null, JSON.stringify(form, undefined, 2)));
 };
 
 var _default = UserContactForm;

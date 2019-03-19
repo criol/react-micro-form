@@ -4,18 +4,40 @@ import React from 'react'
 import Form from '../Components/Form'
 import { useField, useForm } from '../Components/Form/FormHooks';
 
+const required = v => v ? null : 'required';
+ 
 const UserContactForm = () => {
-  const { form, handleSubmit } = useForm(() => {
-    console.log('it works');
-  });
+  console.log('render')
+  const { form, handleSubmit, values, state } = useForm(
+    () => {},
+    {
+      validate: values => {
+        return {
+          firstName: [required(values.firstName)],
+          lastName: [required(values.lastName)]
+        }
+      }, 
+      warn: values => [required(values.firstName), required(values.lastName)].filter(e => !!e),
+    },
+    {
+      firstName: 'lol', 
+      lastName: 'boo'
+    }
+  );
 
-  const firstNameField = useField('firstName', form, (value) => !value ? ['required'] : null);
+  const firstNameField = useField('firstName', form);
+  const lastNameField = useField('lastName', form);
+  
   return (
     <form onSubmit={handleSubmit}>
       <input {...firstNameField.input} />
-      <pre>{JSON.stringify(firstNameField.states, undefined, 2)}</pre>
-      {firstNameField.errors.map(v=>v)}
 
+      <input {...firstNameField.input} />
+      <pre>{JSON.stringify(firstNameField.states, undefined, 2)}</pre>
+
+      <input {...lastNameField.input} />
+      <pre>{JSON.stringify(lastNameField.states, undefined, 2)}</pre>
+      <pre>{JSON.stringify(form, undefined, 2)}</pre>
     </form>
   );
 }

@@ -1,69 +1,73 @@
 import { useState } from 'react';
 
-export function useForm (onSubmit) {
-  console.log(useState);
-  const [allInputs, setInputs] = useState({});
-  let fields = {}
+const noop = () => {};
+
+
+
+export function useForm (onSubmit, {validate, warn}, initialValues) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState(validate(values));
+  const [warnings, setWarnings] = useState(warn(values));
+  const [state, setState] = useState({
+    touched: false,
+    valid: true,
+  });
+
+  function changeField(fieldName, newValue) {
+    const newValues = {
+      ...values,
+      [fieldName]: newValue
+    }
+    setValues(newValues);
+    const errors = validate(newValues);
+    setErrors(errors);
+    setWarnings(warn(newValues));
+  }
+
+  function changeFieldFocus(fieldName, isFocused) {
+    if (isFocused) {
+      setState({
+        ...state,
+        touched: true
+      });
+    }
+  }
+
+  const form = {
+    changeField,
+    changeFieldFocus,
+    initialValues,
+    values,
+    errors,
+    warnings,
+    state
+  }
 
   return {
-    form: {
-      registerField: (fieldName, field) => {
-        // setInputs({
-        //   ...allInputs,
-        //   fieldName: input
-        // });
-        fields[fieldName] = field;
-      }
-    },
-    handleSubmit: (e) => {
-      Object.entries(fields).forEach(([name, field]) => {
-
-      })
-      e.preventDefault();
-      const errors = Object.entries(fields).reduce((acc, [name, field]) => {
-        console.log(field.suportMethods.forceValidation());
-        return [...acc, ...field.suportMethods.forceValidation()];
-      }, []);
-      console.log(errors);
-      !errors.length && onSubmit && onSubmit();
-    },
+    form,
+    handleSubmit: noop,
+    values,
+    errors,
+    state
   }
 }
 
 
-export function useField (fieldName, form, validate) {
-  const [ value, setValue] = useState('');
-  const [ touched, setTouched ] = useState(false);
-  const input = {
-    name: fieldName,
-    onChange: (e) => {
-      setValue(e.target.value);
-    },
-    onFocus: (e) => {
-      setTouched(true)
-    },
-    value
-  };
-  const suportMethods = {
-    forceValidation: () => {
-      return useValidate(value, validate);
-    },
-  }
-  form.registerField(fieldName, {input, suportMethods});
-  const [ errors ] = useValidate(value, validate);
-  
+export function useField (fieldName, form) {
   return {
-    input,
-    states: {
-      touched,
-      hasErrors: !!errors.length
+    input: {
+      onChange: (e) => {
+        form.changeField(fieldName, e.target.value)
+      },
+      onFocus: e => {
+        form.changeFieldFocus(fieldName, true)
+      },
+      onBlur: e => {
+        form.changeFieldFocus(fieldName, false)
+      },
+      value: form.values[fieldName]
     },
-    errors
+    errors: form.errors[fieldName],
+    warnings: form.warnings[fieldName],
   }
-}
-
-export function useValidate(value, validateFunction) {
-  return [
-    validateFunction(value) || []
-  ]
 }
