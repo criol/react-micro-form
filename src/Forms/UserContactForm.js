@@ -8,7 +8,7 @@ const required = v => v ? null : 'required';
  
 const UserContactForm = () => {
   console.log('render')
-  const { form, handleSubmit, values, state } = useForm(
+  const { form, handleSubmit } = useForm(
     () => {},
     {
       validate: values => {
@@ -17,7 +17,12 @@ const UserContactForm = () => {
           lastName: [required(values.lastName)]
         }
       }, 
-      warn: values => [required(values.firstName), required(values.lastName)].filter(e => !!e),
+      warn: values => {
+        return {
+          firstName: [required(values.firstName)],
+          lastName: [required(values.lastName)]
+        }
+      },
     },
     {
       firstName: 'lol', 

@@ -25725,7 +25725,116 @@ var Form = function Form() {
 
 var _default = Form;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"Components/Form/FormHooks.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"Helpers/fp.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.flow = flow;
+exports.split = split;
+exports.map = map;
+exports.some = some;
+exports.filterOutValues = filterOutValues;
+exports.containsValues = containsValues;
+exports.objectKeys = objectKeys;
+exports.objectValues = objectValues;
+exports.combineObject = combineObject;
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function flow() {
+  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+
+  return function (arg) {
+    var result = arg;
+    funcs.forEach(function (func) {
+      result = func(result);
+    });
+    return result;
+  };
+}
+
+function split() {
+  for (var _len2 = arguments.length, funcs = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    funcs[_key2] = arguments[_key2];
+  }
+
+  return function (arg) {
+    var result = [];
+    funcs.forEach(function (func) {
+      result = [].concat(_toConsumableArray(result), [func(arg)]);
+    });
+    return result;
+  };
+}
+
+function map(mapperFunc) {
+  return function (array) {
+    return array.map(mapperFunc);
+  };
+}
+
+function some(filterFunc) {
+  return function (array) {
+    return array.some(filterFunc);
+  };
+}
+
+function filterOutValues() {
+  for (var _len3 = arguments.length, values = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+    values[_key3] = arguments[_key3];
+  }
+
+  return function (array) {
+    return array.filter(function (v) {
+      return !values.includes(v);
+    });
+  };
+}
+
+function containsValues(value) {
+  return function (array) {
+    return array.includes(value);
+  };
+}
+
+function objectKeys(obj) {
+  return Object.keys(obj);
+}
+
+function objectValues(obj) {
+  return Object.values(obj);
+}
+
+function combineObject(_ref) {
+  var _ref2 = _slicedToArray(_ref, 2),
+      keyArr = _ref2[0],
+      valuesArr = _ref2[1];
+
+  var result = {};
+  keyArr.forEach(function (key, i) {
+    result[key] = valuesArr[i];
+  });
+  return result;
+}
+},{}],"Components/Form/FormHooks.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25735,6 +25844,8 @@ exports.useForm = useForm;
 exports.useField = useField;
 
 var _react = require("react");
+
+var _fp = require("../../Helpers/fp");
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
@@ -25748,47 +25859,69 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var noop = function noop() {};
+var errorFilterer = (0, _fp.flow)((0, _fp.split)((0, _fp.flow)(_fp.objectKeys), (0, _fp.flow)(_fp.objectValues, (0, _fp.map)((0, _fp.filterOutValues)(null, '', undefined)))), _fp.combineObject);
+window.errorFilterer = (0, _fp.flow)((0, _fp.split)((0, _fp.flow)(_fp.objectKeys), (0, _fp.flow)(_fp.objectValues, (0, _fp.map)((0, _fp.filterOutValues)(null, '', undefined)))), _fp.combineObject);
+
+function useFormChecking(values, checkFunction) {
+  var _useState = (0, _react.useState)(errorFilterer(checkFunction(values))),
+      _useState2 = _slicedToArray(_useState, 2),
+      errors = _useState2[0],
+      setErrors = _useState2[1];
+
+  function doCheck(vals) {
+    setErrors(errorFilterer(checkFunction(vals)));
+  }
+
+  return [errors, doCheck, (0, _fp.flow)(_fp.objectValues, function (x) {
+    console.log(x);
+    return x;
+  }, (0, _fp.some)(function (v) {
+    return v.length;
+  }), function (x) {
+    console.log(x);
+    return x;
+  })(errors)];
+}
 
 function useForm(onSubmit, _ref, initialValues) {
   var validate = _ref.validate,
       warn = _ref.warn;
 
-  var _useState = (0, _react.useState)(initialValues),
-      _useState2 = _slicedToArray(_useState, 2),
-      values = _useState2[0],
-      setValues = _useState2[1];
-
-  var _useState3 = (0, _react.useState)(validate(values)),
+  var _useState3 = (0, _react.useState)(initialValues),
       _useState4 = _slicedToArray(_useState3, 2),
-      errors = _useState4[0],
-      setErrors = _useState4[1];
+      values = _useState4[0],
+      setValues = _useState4[1];
 
-  var _useState5 = (0, _react.useState)(warn(values)),
-      _useState6 = _slicedToArray(_useState5, 2),
-      warnings = _useState6[0],
-      setWarnings = _useState6[1];
+  var _useFormChecking = useFormChecking(values, warn),
+      _useFormChecking2 = _slicedToArray(_useFormChecking, 3),
+      warnings = _useFormChecking2[0],
+      setWarnings = _useFormChecking2[1],
+      hasWarnings = _useFormChecking2[2];
 
-  var _useState7 = (0, _react.useState)({
-    touched: false,
-    valid: true
+  var _useFormChecking3 = useFormChecking(values, validate),
+      _useFormChecking4 = _slicedToArray(_useFormChecking3, 3),
+      errors = _useFormChecking4[0],
+      setErrors = _useFormChecking4[1],
+      hasErrors = _useFormChecking4[2];
+
+  var _useState5 = (0, _react.useState)({
+    touched: false
   }),
-      _useState8 = _slicedToArray(_useState7, 2),
-      state = _useState8[0],
-      setState = _useState8[1];
+      _useState6 = _slicedToArray(_useState5, 2),
+      formStates = _useState6[0],
+      setFormStates = _useState6[1];
 
   function changeField(fieldName, newValue) {
     var newValues = _objectSpread({}, values, _defineProperty({}, fieldName, newValue));
 
     setValues(newValues);
-    var errors = validate(newValues);
-    setErrors(errors);
-    setWarnings(warn(newValues));
+    setErrors(newValues);
+    setWarnings(newValues);
   }
 
   function changeFieldFocus(fieldName, isFocused) {
     if (isFocused) {
-      setState(_objectSpread({}, state, {
+      setFormStates(_objectSpread({}, formStates, {
         touched: true
       }));
     }
@@ -25801,14 +25934,20 @@ function useForm(onSubmit, _ref, initialValues) {
     values: values,
     errors: errors,
     warnings: warnings,
-    state: state
+    state: _objectSpread({}, formStates, {
+      hasErrors: hasErrors,
+      hasWarnings: hasWarnings
+    })
   };
   return {
     form: form,
-    handleSubmit: noop,
+    handleSubmit: onSubmit,
     values: values,
     errors: errors,
-    state: state
+    state: _objectSpread({}, formStates, {
+      hasErrors: hasErrors,
+      hasWarnings: hasWarnings
+    })
   };
 }
 
@@ -25830,7 +25969,7 @@ function useField(fieldName, form) {
     warnings: form.warnings[fieldName]
   };
 }
-},{"react":"../node_modules/react/index.js"}],"Forms/UserContactForm.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../Helpers/fp":"Helpers/fp.js"}],"Forms/UserContactForm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25863,18 +26002,17 @@ var UserContactForm = function UserContactForm() {
       };
     },
     warn: function warn(values) {
-      return [required(values.firstName), required(values.lastName)].filter(function (e) {
-        return !!e;
-      });
+      return {
+        firstName: [required(values.firstName)],
+        lastName: [required(values.lastName)]
+      };
     }
   }, {
     firstName: 'lol',
     lastName: 'boo'
   }),
       form = _useForm.form,
-      handleSubmit = _useForm.handleSubmit,
-      values = _useForm.values,
-      state = _useForm.state;
+      handleSubmit = _useForm.handleSubmit;
 
   var firstNameField = (0, _FormHooks.useField)('firstName', form);
   var lastNameField = (0, _FormHooks.useField)('lastName', form);

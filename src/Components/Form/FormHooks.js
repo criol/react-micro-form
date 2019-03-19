@@ -1,16 +1,66 @@
 import { useState } from 'react';
 
-const noop = () => {};
+import { 
+  flow, 
+  split, 
+  combineObject, 
+  map, 
+  some,
+  filterOutValues, 
+  objectKeys, 
+  objectValues,
+  containsValues
+} from '../../Helpers/fp';
 
+const errorFilterer = flow(
+  split(
+    flow(
+      objectKeys
+    ),
+    flow(
+      objectValues,
+      map(filterOutValues(null, '', undefined)),
+    ),
+  ),
+  combineObject
+);
 
+window.errorFilterer = flow(
+  split(
+    flow(
+      objectKeys
+    ),
+    flow(
+      objectValues,
+      map(filterOutValues(null, '', undefined)),
+    ),
+  ),
+  combineObject
+);
+function useFormChecking(values, checkFunction) {
+  const [errors, setErrors] = useState(
+    errorFilterer(checkFunction(values))
+  );
+
+  function doCheck(vals) {
+    setErrors(
+      errorFilterer(checkFunction(vals))
+    );
+  }
+  return [
+    errors,
+    doCheck,
+    flow(objectValues, x=> {console.log(x); return x}, some(v => v.length), x=> {console.log(x); return x})(errors)
+  ]
+}
 
 export function useForm (onSubmit, {validate, warn}, initialValues) {
-  const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState(validate(values));
-  const [warnings, setWarnings] = useState(warn(values));
-  const [state, setState] = useState({
+  const [ values, setValues ] = useState(initialValues);
+  const [ warnings, setWarnings, hasWarnings ] = useFormChecking(values, warn);
+  const [ errors, setErrors, hasErrors ] = useFormChecking(values, validate);
+  
+  const [ formStates, setFormStates ] = useState({
     touched: false,
-    valid: true,
   });
 
   function changeField(fieldName, newValue) {
@@ -19,15 +69,14 @@ export function useForm (onSubmit, {validate, warn}, initialValues) {
       [fieldName]: newValue
     }
     setValues(newValues);
-    const errors = validate(newValues);
-    setErrors(errors);
-    setWarnings(warn(newValues));
+    setErrors(newValues);
+    setWarnings(newValues);
   }
 
   function changeFieldFocus(fieldName, isFocused) {
     if (isFocused) {
-      setState({
-        ...state,
+      setFormStates({
+        ...formStates,
         touched: true
       });
     }
@@ -40,15 +89,23 @@ export function useForm (onSubmit, {validate, warn}, initialValues) {
     values,
     errors,
     warnings,
-    state
+    state: {
+      ...formStates,
+      hasErrors,
+      hasWarnings
+    }
   }
 
   return {
     form,
-    handleSubmit: noop,
+    handleSubmit: onSubmit,
     values,
     errors,
-    state
+    state: {
+      ...formStates,
+      hasErrors,
+      hasWarnings
+    }
   }
 }
 
@@ -57,13 +114,13 @@ export function useField (fieldName, form) {
   return {
     input: {
       onChange: (e) => {
-        form.changeField(fieldName, e.target.value)
+        form.changeField(fieldName, e.target.value);
       },
       onFocus: e => {
-        form.changeFieldFocus(fieldName, true)
+        form.changeFieldFocus(fieldName, true);
       },
       onBlur: e => {
-        form.changeFieldFocus(fieldName, false)
+        form.changeFieldFocus(fieldName, false);
       },
       value: form.values[fieldName]
     },
