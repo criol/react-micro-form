@@ -2,25 +2,12 @@
 // see the SINGLE IMPLEMENTATION section for details
 import React from 'react';
 import { useField, useForm } from '../Hooks/Form';
+import { validate } from './validate';
+import { FieldNames } from './constants';
 
 let renderCount = 0;
-const required = v => (v ? null : 'required');
-const lengthBiggerThan = (v = '', l) =>
-  v.length >= l ? null : `tooSmall (should be ${l})`;
 
-const validate = values => {
-  return {
-    firstName: [required(values.firstName)],
-    lastName: [required(values.lastName)],
-  };
-};
-
-const warn = values => {
-  return {
-    firstName: [lengthBiggerThan(values.firstName, 4)],
-    lastName: [lengthBiggerThan(values.lastName, 4)],
-  };
-};
+const warn = () => ({});
 
 const UserContactForm = () => {
   renderCount += 1;
@@ -36,13 +23,10 @@ const UserContactForm = () => {
     },
   );
 
-  const [firstNameField] = useField('firstName', form);
-  const [lastNameField] = useField('lastName', form);
-  const [radio1] = useField('sex', form, 'male');
-  const [radio2] = useField('sex', form, 'female');
-  const [checkbox] = useField('isPrivate', form, 'true');
-  const [checkbox1] = useField('food', form, 'melon');
-  const [checkbox2] = useField('food', form, 'watermelon');
+  const [firstName, firstNameMeta] = useField(FieldNames.firstName, form);
+  const [lastName, lastNameMeta] = useField(FieldNames.lastName, form);
+  const [areaCode, areaCodeMeta] = useField(FieldNames.areaCode, form);
+  const [phoneNumber, phoneNumberMeta] = useField(FieldNames.phoneNumber, form);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -50,20 +34,25 @@ const UserContactForm = () => {
         render count:
         {renderCount}
       </div>
-      <input {...firstNameField} />
-      <input {...lastNameField} />
+      <input {...firstName} />
+      {firstNameMeta.errors.map(error => (
+        <div>{error}</div>
+      ))}
       <br />
-      sex
-      <input type="radio" {...radio1} />
-      <input type="radio" {...radio2} />
+      <input {...lastName} />
+      {lastNameMeta.errors.map(error => (
+        <div>{error}</div>
+      ))}
       <br />
-      food
-      <input type="checkbox" {...checkbox1} />
-      <input type="checkbox" {...checkbox2} />
+      <input {...areaCode} />
+      {areaCodeMeta.errors.map(error => (
+        <div>{error}</div>
+      ))}
       <br />
-      isPrivate
-      <input type="checkbox" {...checkbox} />
-      <pre>{JSON.stringify(form, undefined, 2)}</pre>
+      <input {...phoneNumber} />
+      {phoneNumberMeta.errors.map(error => (
+        <div>{error}</div>
+      ))}
       <button type="submit">submit</button>
     </form>
   );

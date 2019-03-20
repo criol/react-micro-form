@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useFormChecking } from './useFormChecking.hook';
 import { useImmutableHash } from '../Common/useImmutableHash.hook';
-import { isEqualTo } from '../../Helpers/fp';
+import { isEqualTo, isArray } from '../../Helpers/fp';
 
 const isCheckbox = isEqualTo('checkbox');
 
 function toggleValueInArray(array, value) {
-  if (!Array.isArray(array)) {
+  if (!isArray(array)) {
     return [value];
   }
   const newArray = [...array];

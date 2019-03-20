@@ -10,3 +10,5 @@
 + submitting the form
 + submitted status
 - createValidator helper function
+- better format for many inputs
+- remove Array.isArray

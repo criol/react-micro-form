@@ -34,6 +34,12 @@ export function some(filterFunc) {
   };
 }
 
+export function reduce(reduceFunc, initValue) {
+  return function(array) {
+    return array.reduce(reduceFunc, initValue);
+  };
+}
+
 export function filterOutValues(...values) {
   return function(array) {
     return array.filter(v => !values.includes(v));
@@ -52,6 +58,10 @@ export function objectKeys(obj) {
 
 export function objectValues(obj) {
   return Object.values(obj);
+}
+
+export function isArray(obj) {
+  return Array.isArray(obj);
 }
 
 export function combineObject([keyArr, valuesArr]) {

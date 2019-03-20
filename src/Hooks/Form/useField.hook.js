@@ -1,11 +1,8 @@
 import { useRef, useEffect } from 'react';
+import { isArray } from '../../Helpers/fp';
 
 function isChecked(value, fixedValue) {
-  console.log(value, fixedValue);
-
-  return (
-    value === fixedValue || (Array.isArray(value) && value.includes(fixedValue))
-  );
+  return value === fixedValue || (isArray(value) && value.includes(fixedValue));
 }
 
 export function useField(fieldName, form, fixedValue) {
@@ -28,7 +25,7 @@ export function useField(fieldName, form, fixedValue) {
       onBlur: () => {
         form.changeFieldFocus(fieldName, false);
       },
-      value: fixedValue || form.values[fieldName],
+      value: fixedValue || form.values[fieldName] || '',
       checked,
       name: fieldName,
       ref,
