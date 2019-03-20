@@ -1,10 +1,10 @@
-import { createChecker } from '../Helpers/Validate/createChecker';
+import { createChecker } from '../../Helpers/Validate/createChecker';
 import {
   required,
   stringOnly,
   numberOnly,
   phoneNumber,
-} from '../Helpers/Validate/validators';
+} from '../../Helpers/Validate/validators';
 import { FieldNames } from './constants';
 
 export const validate = createChecker({
@@ -16,6 +16,6 @@ export const validate = createChecker({
   [FieldNames.areaCode]: [numberOnly('Area code can contain only numbers')],
   [FieldNames.phoneNumber]: [
     phoneNumber('Phone number is not valid'),
-    required('Please prove a phone number'),
+    required('Please provide a phone number'),
   ],
 });

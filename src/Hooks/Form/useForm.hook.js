@@ -4,6 +4,7 @@ import { useImmutableHash } from '../Common/useImmutableHash.hook';
 import { isEqualTo, isArray } from '../../Helpers/fp';
 
 const isCheckbox = isEqualTo('checkbox');
+const noopChecker = () => ({});
 
 function toggleValueInArray(array, value) {
   if (!isArray(array)) {
@@ -20,7 +21,11 @@ function toggleValueInArray(array, value) {
   return newArray;
 }
 
-export function useForm(onSubmit, { validate, warn }, initialValues) {
+export function useForm(
+  onSubmit,
+  { validate = noopChecker, warn = noopChecker },
+  initialValues = {},
+) {
   const [values, setValues] = useState(initialValues);
   const [warnings, checkWarnings, hasWarnings] = useFormChecking(values, warn);
   const [errors, validateValues, hasErrors] = useFormChecking(values, validate);
@@ -128,8 +133,10 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
   function getFieldStatus(fieldName) {
     const invalid = errors[fieldName] && !!errors[fieldName].length;
     const warned = warnings[fieldName] && !!warnings[fieldName].length;
+    const { submitted } = formStatus;
 
     const defaultFieldStatus = {
+      submitted,
       visited: false,
       touched: false,
       pristine: true,
@@ -152,8 +159,8 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
     hasWarnings,
   };
 
-  return {
-    form: {
+  return [
+    {
       changeField,
       changeFieldFocus,
       initialValues,
@@ -165,8 +172,10 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
       registerInputType,
     },
     handleSubmit,
-    values,
-    errors,
-    status,
-  };
+    {
+      values,
+      errors,
+      status,
+    },
+  ];
 }

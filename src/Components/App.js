@@ -1,7 +1,7 @@
 import React from 'react';
 import { Global, css } from '@emotion/core';
 import styled from '@emotion/styled';
-import UserContactForm from '../Forms/UserContactForm';
+import UserContactForm from '../Forms/UserContactForm/UserContactForm';
 
 const globalStyles = css`
   body {
