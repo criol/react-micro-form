@@ -1,40 +1,48 @@
 // code related to a specific form goes here, using the imported generic Form component
 // see the SINGLE IMPLEMENTATION section for details
-import React from 'react'
-import Form from '../Components/Form'
-import { useField, useForm } from '../Components/Form/FormHooks';
+import React from 'react';
+import { useField, useForm } from '../Hooks/Form';
 
-const required = v => v ? null : 'required';
- 
+let renderCount = 0;
+const required = v => (v ? null : 'required');
+const lengthBiggerThan = (v, l) => (v.length >= l ? null : 'tooSmall');
+
+const validate = values => {
+  return {
+    firstName: [required(values.firstName)],
+    lastName: [required(values.lastName)],
+  };
+};
+const warn = values => {
+  return {
+    firstName: [lengthBiggerThan(values.firstName, 4)],
+    lastName: [lengthBiggerThan(values.lastName, 4)],
+  };
+};
+
 const UserContactForm = () => {
-  console.log('render')
+  renderCount += 1;
+
   const { form, handleSubmit } = useForm(
-    () => {},
-    {
-      validate: values => {
-        return {
-          firstName: [required(values.firstName)],
-          lastName: [required(values.lastName)]
-        }
-      }, 
-      warn: values => {
-        return {
-          firstName: [required(values.firstName)],
-          lastName: [required(values.lastName)]
-        }
-      },
+    () => {
+      console.log('it works!');
     },
+    { validate, warn },
     {
-      firstName: 'lol', 
-      lastName: 'boo'
-    }
+      firstName: 'lol',
+      lastName: 'boo',
+    },
   );
 
   const firstNameField = useField('firstName', form);
   const lastNameField = useField('lastName', form);
-  
+
   return (
     <form onSubmit={handleSubmit}>
+      <div>
+        render count:
+        {renderCount}
+      </div>
       <input {...firstNameField.input} />
 
       <input {...firstNameField.input} />
@@ -45,7 +53,6 @@ const UserContactForm = () => {
       <pre>{JSON.stringify(form, undefined, 2)}</pre>
     </form>
   );
-}
+};
 
-
-export default UserContactForm
+export default UserContactForm;
