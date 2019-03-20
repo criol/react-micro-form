@@ -1,6 +1,24 @@
 import { useState } from 'react';
 import { useFormChecking } from './useFormChecking.hook';
 import { useImmutableHash } from '../Common/useImmutableHash.hook';
+import { isEqualTo } from '../../Helpers/fp';
+
+const isCheckbox = isEqualTo('checkbox');
+
+function toggleValueInArray(array, value) {
+  if (!Array.isArray(array)) {
+    return [value];
+  }
+  const newArray = [...array];
+
+  if (newArray.includes(value)) {
+    newArray.splice(newArray.indexOf(value), 1);
+  } else {
+    newArray.push(value);
+  }
+
+  return newArray;
+}
 
 export function useForm(onSubmit, { validate, warn }, initialValues) {
   const [values, setValues] = useState(initialValues);
@@ -8,6 +26,7 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
   const [errors, validateValues, hasErrors] = useFormChecking(values, validate);
 
   const [formStatus, updateFormStatus] = useImmutableHash({
+    submitted: false,
     visited: false,
     touched: false,
     pristine: true,
@@ -15,12 +34,52 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
   });
 
   const [fieldsStatus, updateFieldsStatus] = useImmutableHash({});
+  const groupFields = {};
+  const togglingFields = {};
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    updateFormStatus({
+      submitted: true,
+    });
+    if (!hasErrors) {
+      onSubmit(values);
+    }
+  }
+
+  const fields = {};
+
+  function registerInputType(fieldName, type) {
+    const checkbox = isCheckbox(type);
+
+    if (checkbox) {
+      if (fields[fieldName]) {
+        groupFields[fieldName] = true;
+        if (checkbox) {
+          delete togglingFields[fieldName];
+        }
+      } else {
+        fields[fieldName] = true;
+        if (checkbox) {
+          togglingFields[fieldName] = true;
+        }
+      }
+    }
+  }
 
   function changeField(fieldName, newValue) {
     const newValues = {
       ...values,
-      [fieldName]: newValue,
     };
+
+    if (groupFields[fieldName]) {
+      newValues[fieldName] = toggleValueInArray(newValues[fieldName], newValue);
+    } else if (togglingFields[fieldName]) {
+      newValues[fieldName] =
+        newValues[fieldName] === undefined ? newValue : undefined;
+    } else {
+      newValues[fieldName] = newValue;
+    }
 
     setValues(newValues);
     validateValues(newValues);
@@ -103,8 +162,9 @@ export function useForm(onSubmit, { validate, warn }, initialValues) {
       warnings,
       status,
       getFieldStatus,
+      registerInputType,
     },
-    handleSubmit: onSubmit,
+    handleSubmit,
     values,
     errors,
     status,

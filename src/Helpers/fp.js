@@ -63,3 +63,9 @@ export function combineObject([keyArr, valuesArr]) {
 
   return result;
 }
+
+export function isEqualTo(...posibleValues) {
+  return function(value) {
+    return posibleValues.includes(value);
+  };
+}

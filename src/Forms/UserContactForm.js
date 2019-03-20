@@ -26,17 +26,23 @@ const UserContactForm = () => {
   renderCount += 1;
 
   const { form, handleSubmit } = useForm(
-    () => {
-      console.log('it works!');
+    values => {
+      console.log('it works!', values);
     },
     { validate, warn },
     {
       lastName: 'boo',
+      sex: 'male',
     },
   );
 
-  const firstNameField = useField('firstName', form);
-  const lastNameField = useField('lastName', form);
+  const [firstNameField] = useField('firstName', form);
+  const [lastNameField] = useField('lastName', form);
+  const [radio1] = useField('sex', form, 'male');
+  const [radio2] = useField('sex', form, 'female');
+  const [checkbox] = useField('isPrivate', form, 'true');
+  const [checkbox1] = useField('food', form, 'melon');
+  const [checkbox2] = useField('food', form, 'watermelon');
 
   return (
     <form onSubmit={handleSubmit}>
@@ -44,22 +50,21 @@ const UserContactForm = () => {
         render count:
         {renderCount}
       </div>
-      <input {...firstNameField.input} />
-      <div>status</div>
-      <pre>{JSON.stringify(firstNameField.status, undefined, 2)}</pre>
-      <div>errors</div>
-      <pre>{JSON.stringify(firstNameField.errors, undefined, 2)}</pre>
-      <div>warnings</div>
-      <pre>{JSON.stringify(firstNameField.warnings, undefined, 2)}</pre>
-      <input {...lastNameField.input} />
-      <div>status</div>
-      <pre>{JSON.stringify(lastNameField.status, undefined, 2)}</pre>
-      <div>errors</div>
-      <pre>{JSON.stringify(lastNameField.errors, undefined, 2)}</pre>
-      <div>warnings</div>
-      <pre>{JSON.stringify(lastNameField.warnings, undefined, 2)}</pre>
-
+      <input {...firstNameField} />
+      <input {...lastNameField} />
+      <br />
+      sex
+      <input type="radio" {...radio1} />
+      <input type="radio" {...radio2} />
+      <br />
+      food
+      <input type="checkbox" {...checkbox1} />
+      <input type="checkbox" {...checkbox2} />
+      <br />
+      isPrivate
+      <input type="checkbox" {...checkbox} />
       <pre>{JSON.stringify(form, undefined, 2)}</pre>
+      <button type="submit">submit</button>
     </form>
   );
 };
