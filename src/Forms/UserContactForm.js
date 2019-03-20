@@ -5,7 +5,8 @@ import { useField, useForm } from '../Hooks/Form';
 
 let renderCount = 0;
 const required = v => (v ? null : 'required');
-const lengthBiggerThan = (v, l) => (v.length >= l ? null : 'tooSmall');
+const lengthBiggerThan = (v = '', l) =>
+  v.length >= l ? null : `tooSmall (should be ${l})`;
 
 const validate = values => {
   return {
@@ -13,6 +14,7 @@ const validate = values => {
     lastName: [required(values.lastName)],
   };
 };
+
 const warn = values => {
   return {
     firstName: [lengthBiggerThan(values.firstName, 4)],
@@ -29,7 +31,6 @@ const UserContactForm = () => {
     },
     { validate, warn },
     {
-      firstName: 'lol',
       lastName: 'boo',
     },
   );
@@ -44,12 +45,20 @@ const UserContactForm = () => {
         {renderCount}
       </div>
       <input {...firstNameField.input} />
-
-      <input {...firstNameField.input} />
-      <pre>{JSON.stringify(firstNameField.states, undefined, 2)}</pre>
-
+      <div>status</div>
+      <pre>{JSON.stringify(firstNameField.status, undefined, 2)}</pre>
+      <div>errors</div>
+      <pre>{JSON.stringify(firstNameField.errors, undefined, 2)}</pre>
+      <div>warnings</div>
+      <pre>{JSON.stringify(firstNameField.warnings, undefined, 2)}</pre>
       <input {...lastNameField.input} />
-      <pre>{JSON.stringify(lastNameField.states, undefined, 2)}</pre>
+      <div>status</div>
+      <pre>{JSON.stringify(lastNameField.status, undefined, 2)}</pre>
+      <div>errors</div>
+      <pre>{JSON.stringify(lastNameField.errors, undefined, 2)}</pre>
+      <div>warnings</div>
+      <pre>{JSON.stringify(lastNameField.warnings, undefined, 2)}</pre>
+
       <pre>{JSON.stringify(form, undefined, 2)}</pre>
     </form>
   );

@@ -10,9 +10,10 @@ export function useField(fieldName, form) {
       onBlur: () => {
         form.changeFieldFocus(fieldName, false);
       },
-      value: form.values[fieldName],
+      value: form.values[fieldName] || '',
     },
     errors: form.errors[fieldName],
     warnings: form.warnings[fieldName],
+    status: form.getFieldStatus(fieldName),
   };
 }
