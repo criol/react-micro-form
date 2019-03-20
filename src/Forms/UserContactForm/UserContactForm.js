@@ -1,7 +1,7 @@
 // code related to a specific form goes here, using the imported generic Form component
 // see the SINGLE IMPLEMENTATION section for details
 import React from 'react';
-import { ErrorMessages } from '../../Components/Form/ErrorMessages';
+import { Input } from '../../Components/Form/Input';
 import { useField, useForm } from '../../Hooks/Form';
 import { validate } from './validate';
 import { FieldNames } from './constants';
@@ -12,51 +12,14 @@ const UserContactForm = ({ onSubmit = () => {} }) => {
   const [firstName, firstNameMeta] = useField(FieldNames.firstName, form);
   const [lastName, lastNameMeta] = useField(FieldNames.lastName, form);
   const [areaCode, areaCodeMeta] = useField(FieldNames.areaCode, form);
-  const [phoneNumber, phoneNumberMeta] = useField(FieldNames.phoneNumber, form);
+  const [number, numberMeta] = useField(FieldNames.phoneNumber, form);
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        First name *
-        <input {...firstName} />
-      </label>
-
-      <ErrorMessages
-        status={firstNameMeta.status}
-        messages={firstNameMeta.errors}
-        showConditions={['touched', 'submitted']}
-      />
-      <br />
-      <label>
-        Last name
-        <input {...lastName} />
-      </label>
-      <ErrorMessages
-        status={lastNameMeta.status}
-        messages={lastNameMeta.errors}
-        showConditions={['touched', 'submitted']}
-      />
-      <br />
-      <label>
-        Area code
-        <input {...areaCode} />
-      </label>
-      <ErrorMessages
-        status={areaCodeMeta.status}
-        messages={areaCodeMeta.errors}
-        showConditions={['touched', 'submitted']}
-      />
-      <br />
-      <label>
-        Phone number *
-        <input {...phoneNumber} />
-      </label>
-      <ErrorMessages
-        status={phoneNumberMeta.status}
-        messages={phoneNumberMeta.errors}
-        showConditions={['touched', 'submitted']}
-      />
-      <br />
+      <Input inputParams={firstName} meta={firstNameMeta} label="First name*" />
+      <Input inputParams={lastName} meta={lastNameMeta} label="Last name" />
+      <Input inputParams={areaCode} meta={areaCodeMeta} label="Area code" />
+      <Input inputParams={number} meta={numberMeta} label="Phone number*" />
       <button type="submit">submit</button>
     </form>
   );
