@@ -6,7 +6,7 @@ import { useField, useForm } from '../../Hooks/Form';
 import { validate } from './validate';
 import { FieldNames } from './constants';
 
-const UserContactForm = ({ onSubmit = () => {} }) => {
+export const UserContactForm = ({ onSubmit = () => {} }) => {
   const [form, handleSubmit] = useForm(onSubmit, { validate });
 
   const [firstName, firstNameMeta] = useField(FieldNames.firstName, form);
@@ -24,5 +24,3 @@ const UserContactForm = ({ onSubmit = () => {} }) => {
     </form>
   );
 };
-
-export default UserContactForm;

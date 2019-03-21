@@ -1,7 +1,7 @@
 import React from 'react';
 import { Global, css } from '@emotion/core';
 import styled from '@emotion/styled';
-import UserContactForm from '../Forms/UserContactForm/UserContactForm';
+import { UserContactForm } from '../Forms/UserContactForm/UserContactForm';
 
 const globalStyles = css`
   body {
@@ -19,7 +19,9 @@ const App = () => (
   <React.Fragment>
     <Global styles={globalStyles} />
     <FormHeader>Update Your Details</FormHeader>
-    <UserContactForm />
+    <UserContactForm
+      onSubmit={val => alert(JSON.stringify(val, undefined, 2))}
+    />
   </React.Fragment>
 );
 
