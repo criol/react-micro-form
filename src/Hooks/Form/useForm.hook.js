@@ -52,6 +52,10 @@ export function useForm(
     }
   }
 
+  function resetToInitialValues() {
+    setValues(initialValues);
+  }
+
   const fields = {};
 
   function registerInputType(fieldName, type) {
@@ -177,5 +181,6 @@ export function useForm(
       errors,
       status,
     },
+    resetToInitialValues,
   ];
 }

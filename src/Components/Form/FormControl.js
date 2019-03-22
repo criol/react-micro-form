@@ -18,43 +18,34 @@ const LabelContainer = styled.label`
   width: 100%;
 `;
 
-const LabelText = styled.label`
+const LabelText = styled.span`
   color: #606060;
   margin-bottom: 5px;
   line-height: 20px;
 `;
 
-const StyledInput = styled.input`
-  width: 100%;
-  height: 30px;
-  border-radius: 2px;
-  padding: 5px;
-  border: 1px solid #ccc;
-
-  &:focus {
-    outline: none;
-    border: 1px solid #0d8ade;
-  }
-`;
-
 const ErrorMessagesContainer = styled.div`
   color: #f25255;
-  min-height: 15px;
   font-size: 13px;
   margin-top: 5px;
 }`;
 
-export const Input = ({ inputParams, meta, label }) => (
+export const FormControl = ({
+  meta,
+  label,
+  children,
+  errorsConditions = ['touched', 'submitted'],
+}) => (
   <InputContainer>
     <LabelContainer>
       <LabelText>{label}</LabelText>
-      <StyledInput {...inputParams} />
+      {children}
     </LabelContainer>
     <ErrorMessagesContainer>
       <ErrorMessages
         status={meta.status}
         messages={meta.errors}
-        showConditions={['touched', 'submitted']}
+        showConditions={errorsConditions}
       />
     </ErrorMessagesContainer>
   </InputContainer>
