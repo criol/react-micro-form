@@ -12,7 +12,7 @@ import {
 
 const errorFilterer = flow(
   split(
-    flow(objectKeys),
+    objectKeys,
     flow(
       objectValues,
       map(filterOutValues(null, '', undefined)),

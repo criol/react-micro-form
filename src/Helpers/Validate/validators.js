@@ -1,12 +1,12 @@
-function createValidator(check) {
-  return function(errorMessage) {
-    return function(value, values) {
-      return check(value, values) ? null : errorMessage;
+function createValidator(check, defaultErrorMessage) {
+  return errorMessage => {
+    return (value, values) => {
+      return check(value, values) ? null : errorMessage || defaultErrorMessage;
     };
   };
 }
 
-export const required = createValidator(v => !!v);
+export const required = createValidator(v => !!v, 'requred');
 
 export const stringOnly = createValidator(v => !v || !/\d/.test(v));
 
