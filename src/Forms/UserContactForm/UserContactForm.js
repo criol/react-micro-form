@@ -6,18 +6,20 @@ import { useField, useForm } from '../../Hooks/Form';
 import { FormControl } from '../../Components/Form/FormControl';
 import { StyledInput } from '../../Components/StyledComponents/StyledInput';
 import { StyledButton } from '../../Components/StyledComponents/StyledButton';
-import { StyledPre } from '../../Components/StyledComponents/StyledPre';
-import { StyledFormContrainer } from '../../Components/StyledComponents/StyledFormContrainer';
 
 import { validate } from './validate';
 import { FieldNames } from './constants';
+
+const Form = styled.form`
+  width: 500px;
+`;
 
 const InputsContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-export const UserContactForm = ({ onSubmit = () => {} }) => {
-  const [form, handleSubmit, { values, status }] = useForm(onSubmit, {
+export const UserContactForm = ({ onSubmit }) => {
+  const [form, handleSubmit] = useForm(onSubmit, {
     validate,
   });
 
@@ -27,34 +29,26 @@ export const UserContactForm = ({ onSubmit = () => {} }) => {
   const [number, numberMeta] = useField(FieldNames.phoneNumber, form);
 
   return (
-    <StyledFormContrainer>
-      <form onSubmit={handleSubmit}>
-        <InputsContainer>
-          <FormControl meta={firstNameMeta} label="First name*">
-            <StyledInput {...firstName} />
-          </FormControl>
+    <Form onSubmit={handleSubmit}>
+      <InputsContainer>
+        <FormControl meta={firstNameMeta} label="First name*">
+          <StyledInput {...firstName} />
+        </FormControl>
 
-          <FormControl meta={lastNameMeta} label="Last name">
-            <StyledInput {...lastName} />
-          </FormControl>
+        <FormControl meta={lastNameMeta} label="Last name">
+          <StyledInput {...lastName} />
+        </FormControl>
 
-          <FormControl meta={areaCodeMeta} label="Area code">
-            <StyledInput {...areaCode} />
-          </FormControl>
+        <FormControl meta={areaCodeMeta} label="Area code">
+          <StyledInput {...areaCode} />
+        </FormControl>
 
-          <FormControl meta={numberMeta} label="Phone number*">
-            <StyledInput {...number} />
-          </FormControl>
-        </InputsContainer>
+        <FormControl meta={numberMeta} label="Phone number*">
+          <StyledInput {...number} />
+        </FormControl>
+      </InputsContainer>
 
-        <StyledButton type="submit">Send</StyledButton>
-      </form>
-
-      <StyledPre>
-        {JSON.stringify(values, null, 2)}
-        <hr />
-        {JSON.stringify(status, null, 2)}
-      </StyledPre>
-    </StyledFormContrainer>
+      <StyledButton type="submit">Send</StyledButton>
+    </Form>
   );
 };

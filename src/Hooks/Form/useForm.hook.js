@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFormChecking } from './useFormChecking.hook';
 import { useImmutableHash } from '../Common/useImmutableHash.hook';
 import { isEqualTo, isArray } from '../../Helpers/fp';
@@ -26,13 +26,21 @@ function skipTick() {
 }
 
 export function useForm(
-  onSubmit,
+  callbacks,
   { validate = noopChecker, warn = noopChecker },
   initialValues = {},
 ) {
   const [values, setValues] = useState(initialValues);
   const [warnings, checkWarnings, hasWarnings] = useFormChecking(values, warn);
   const [errors, validateValues, hasErrors] = useFormChecking(values, validate);
+
+  let onSubmit;
+
+  if (typeof callbacks === 'function') {
+    onSubmit = callbacks;
+  } else {
+    ({ onSubmit } = callbacks);
+  }
 
   const [formStatus, updateFormStatus] = useImmutableHash({
     submitted: false,
@@ -168,6 +176,12 @@ export function useForm(
     hasErrors,
     hasWarnings,
   };
+
+  useEffect(() => {
+    const { onChange } = callbacks;
+
+    onChange && onChange(values, errors);
+  }, [values, errors]);
 
   return [
     {

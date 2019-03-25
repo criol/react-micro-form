@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { StyledButtonInline } from '../StyledComponents/StyledButtonInline';
 
 export const ContentToggler = ({ label, labelNegative, children }) => {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(false);
 
   return (
     <Fragment>
