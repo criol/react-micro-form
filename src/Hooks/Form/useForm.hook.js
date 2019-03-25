@@ -10,7 +10,7 @@ const isCheckbox = flow(
 
 const noopChecker = () => ({});
 
-function toggleValueInArray(array, value) {
+const toggleValueInArray = (array, value) => {
   if (!isArray(array)) {
     return [value];
   }
@@ -23,11 +23,14 @@ function toggleValueInArray(array, value) {
   }
 
   return newArray;
-}
+};
 
-function skipTick() {
+const skipTick = () => {
   return new Promise(resolve => setTimeout(resolve));
-}
+};
+
+const getOnSubmit = callbacks =>
+  typeof callbacks === 'function' ? callbacks : callbacks.onSubmit;
 
 export function useForm(
   callbacks,
@@ -37,15 +40,6 @@ export function useForm(
   const [values, setValues] = useState(initialValues);
   const [warnings, checkWarnings, hasWarnings] = useFormChecking(values, warn);
   const [errors, validateValues, hasErrors] = useFormChecking(values, validate);
-
-  let onSubmit;
-
-  if (typeof callbacks === 'function') {
-    onSubmit = callbacks;
-  } else {
-    ({ onSubmit } = callbacks);
-  }
-
   const [formStatus, updateFormStatus] = useImmutableHash({
     submitted: false,
     visited: false,
@@ -53,26 +47,24 @@ export function useForm(
     pristine: true,
     dirty: false,
   });
-
   const [fieldsStatus, updateFieldsStatus] = useImmutableHash({});
+  const status = {
+    ...formStatus,
+    hasErrors,
+    hasWarnings,
+  };
   const groupFields = {};
   const togglingFields = {};
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    updateFormStatus({
-      submitted: true,
-    });
-    if (!hasErrors) {
-      onSubmit(values);
-    }
-  }
-
-  function resetValues(newValues) {
-    setValues(newValues || initialValues);
-  }
-
+  const onSubmit = getOnSubmit(callbacks);
   const fields = {};
+
+  useEffect(() => {
+    const { onChange } = callbacks;
+
+    if (onChange) {
+      onChange(values, errors);
+    }
+  }, [values, errors]);
 
   function registerInput(fieldName, inputNode) {
     const checkbox = isCheckbox(inputNode);
@@ -175,17 +167,19 @@ export function useForm(
     };
   }
 
-  const status = {
-    ...formStatus,
-    hasErrors,
-    hasWarnings,
-  };
+  function handleSubmit(event) {
+    event.preventDefault();
+    updateFormStatus({
+      submitted: true,
+    });
+    if (!hasErrors) {
+      onSubmit(values);
+    }
+  }
 
-  useEffect(() => {
-    const { onChange } = callbacks;
-
-    onChange && onChange(values, errors);
-  }, [values, errors]);
+  function resetValues(newValues) {
+    setValues(newValues || initialValues);
+  }
 
   return [
     {
@@ -203,6 +197,7 @@ export function useForm(
     {
       values,
       errors,
+      warnings,
       status,
     },
     resetValues,
