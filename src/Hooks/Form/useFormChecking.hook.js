@@ -8,6 +8,7 @@ import {
   filterOutValues,
   objectKeys,
   objectValues,
+  castToArray,
 } from '../../Helpers/fp';
 
 const errorFilterer = flow(
@@ -15,7 +16,12 @@ const errorFilterer = flow(
     objectKeys,
     flow(
       objectValues,
-      map(filterOutValues(null, '', undefined)),
+      map(
+        flow(
+          castToArray,
+          filterOutValues(null, '', undefined),
+        ),
+      ),
     ),
   ),
   combineObject,

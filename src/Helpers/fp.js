@@ -85,3 +85,7 @@ export function get(key) {
     return value[key];
   };
 }
+
+export function castToArray(value) {
+  return isArray(value) ? value : [value];
+}

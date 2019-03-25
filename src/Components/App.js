@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Global, css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { ExampleFormContainer } from './Form/ExampleFormContainer';
@@ -9,6 +9,7 @@ import {
   CheckRadioForm,
   SelectForm,
   CustomControlForm,
+  WarningsForm,
 } from '../Forms/Examples';
 
 const globalStyles = css`
@@ -17,8 +18,6 @@ const globalStyles = css`
   }
 `;
 
-// example of styled component
-// https://emotion.sh/docs/styled
 const FormHeader = styled.h1`
   color: hotpink;
 `;
@@ -31,41 +30,45 @@ const onSubmit = val => {
   console.log(val);
 };
 
-const App = () => (
-  <React.Fragment>
-    <Global styles={globalStyles} />
-    <FormHeader>Update Your Details</FormHeader>
-    <UserContactForm onSubmit={onSubmit} />
+const App = () => {
+  const ExampleForms = {
+    'Default values': DefaultValuesForm,
+    'Checkboxes and radios': CheckRadioForm,
+    'Select fields': SelectForm,
+    'Custom control': CustomControlForm,
+    'Warnings/validatons': WarningsForm,
+  };
 
-    <ContentToggler
-      label="Show other examples"
-      labelNegative="Hide other examples"
-    >
-      <FormSubHeader>Default values</FormSubHeader>
-      <ExampleFormContainer>
-        {onChange => (
-          <DefaultValuesForm onSubmit={onSubmit} onChange={onChange} />
-        )}
-      </ExampleFormContainer>
+  return (
+    <React.Fragment>
+      <Global styles={globalStyles} />
+      <FormHeader>Update Your Details</FormHeader>
+      <UserContactForm onSubmit={onSubmit} />
 
-      <FormSubHeader>Checkboxes and radios</FormSubHeader>
-      <ExampleFormContainer>
-        {onChange => <CheckRadioForm onSubmit={onSubmit} onChange={onChange} />}
-      </ExampleFormContainer>
+      <ContentToggler
+        label="Show other examples"
+        labelNegative="Hide other examples"
+      >
+        <FormSubHeader>Default values</FormSubHeader>
+        <ExampleFormContainer>
+          {onChange => (
+            <DefaultValuesForm onSubmit={onSubmit} onChange={onChange} />
+          )}
+        </ExampleFormContainer>
 
-      <FormSubHeader>Select fields</FormSubHeader>
-      <ExampleFormContainer>
-        {onChange => <SelectForm onSubmit={onSubmit} onChange={onChange} />}
-      </ExampleFormContainer>
-
-      <FormSubHeader>Custom control</FormSubHeader>
-      <ExampleFormContainer>
-        {onChange => (
-          <CustomControlForm onSubmit={onSubmit} onChange={onChange} />
-        )}
-      </ExampleFormContainer>
-    </ContentToggler>
-  </React.Fragment>
-);
+        {Object.entries(ExampleForms).map(([title, FormComponent]) => (
+          <Fragment key={title}>
+            <FormSubHeader>{title}</FormSubHeader>
+            <ExampleFormContainer>
+              {onChange => (
+                <FormComponent onSubmit={onSubmit} onChange={onChange} />
+              )}
+            </ExampleFormContainer>
+          </Fragment>
+        ))}
+      </ContentToggler>
+    </React.Fragment>
+  );
+};
 
 export default App;
