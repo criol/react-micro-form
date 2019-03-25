@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { UserContactForm } from '../Forms/UserContactForm/UserContactForm';
 import { ContentToggler } from './ContentToggler/ContentToggler';
 import { DefaultValuesForm } from '../Forms/DefaultValuesForm/DefaultValuesForm';
+import { CheckRadioForm } from '../Forms/CheckRadioForm/CheckRadioForm';
 
 const globalStyles = css`
   body {
@@ -29,6 +30,7 @@ const App = () => (
       labelNegative="Hide other examples"
     >
       <DefaultValuesForm onSubmit={onSubmit} />
+      <CheckRadioForm onSubmit={onSubmit} />
     </ContentToggler>
   </React.Fragment>
 );

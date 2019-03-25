@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { some } from '../../Helpers/fp';
 
-export const ErrorMessages = ({ status, messages, showConditions }) =>
+export const ErrorMessages = ({ status, messages = [], showConditions }) =>
   some(state => status[state])(showConditions) && (
     <Fragment>
       {messages.map((message, i) => (

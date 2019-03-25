@@ -35,18 +35,22 @@ export const FormControl = ({
   label,
   children,
   errorsConditions = ['touched', 'submitted'],
-}) => (
-  <InputContainer>
-    <LabelContainer>
-      <LabelText>{label}</LabelText>
-      {children}
-    </LabelContainer>
-    <ErrorMessagesContainer>
-      <ErrorMessages
-        status={meta.status}
-        messages={meta.errors}
-        showConditions={errorsConditions}
-      />
-    </ErrorMessagesContainer>
-  </InputContainer>
-);
+}) => {
+  return (
+    <InputContainer>
+      <LabelContainer>
+        <LabelText>{label}</LabelText>
+        {children}
+      </LabelContainer>
+      {meta && (
+        <ErrorMessagesContainer>
+          <ErrorMessages
+            status={meta.status}
+            messages={meta.errors}
+            showConditions={errorsConditions}
+          />
+        </ErrorMessagesContainer>
+      )}
+    </InputContainer>
+  );
+};

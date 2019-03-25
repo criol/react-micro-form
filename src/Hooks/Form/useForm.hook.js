@@ -21,6 +21,10 @@ function toggleValueInArray(array, value) {
   return newArray;
 }
 
+function skipTick() {
+  return new Promise(resolve => setTimeout(resolve));
+}
+
 export function useForm(
   onSubmit,
   { validate = noopChecker, warn = noopChecker },
@@ -52,8 +56,8 @@ export function useForm(
     }
   }
 
-  function resetToInitialValues() {
-    setValues(initialValues);
+  function resetValues(newValues) {
+    setValues(newValues || initialValues);
   }
 
   const fields = {};
@@ -109,29 +113,31 @@ export function useForm(
   }
 
   function changeFieldFocus(fieldName, isFocused) {
-    if (isFocused) {
-      updateFormStatus({
-        visited: true,
-      });
-
-      updateFieldsStatus({
-        [fieldName]: {
-          ...fieldsStatus[fieldName],
+    skipTick().then(() => {
+      if (isFocused) {
+        updateFormStatus({
           visited: true,
-        },
-      });
-    } else {
-      updateFormStatus({
-        touched: true,
-      });
+        });
 
-      updateFieldsStatus({
-        [fieldName]: {
-          ...fieldsStatus[fieldName],
+        updateFieldsStatus({
+          [fieldName]: {
+            ...fieldsStatus[fieldName],
+            visited: true,
+          },
+        });
+      } else {
+        updateFormStatus({
           touched: true,
-        },
-      });
-    }
+        });
+
+        updateFieldsStatus({
+          [fieldName]: {
+            ...fieldsStatus[fieldName],
+            touched: true,
+          },
+        });
+      }
+    });
   }
 
   function getFieldStatus(fieldName) {
@@ -181,6 +187,6 @@ export function useForm(
       errors,
       status,
     },
-    resetToInitialValues,
+    resetValues,
   ];
 }

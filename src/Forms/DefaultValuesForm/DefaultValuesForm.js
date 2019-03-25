@@ -16,8 +16,12 @@ const ButtonWithMargin = styled(StyledButton)`
   margin-right: 10px;
 `;
 
+const ButtonInlineWithMargin = styled(StyledButtonInline)`
+  margin-right: 10px;
+`;
+
 export const DefaultValuesForm = ({ onSubmit }) => {
-  const [form, handleSubmit, { values }, resetToInitialValues] = useForm(
+  const [form, handleSubmit, { values }, resetValues] = useForm(
     onSubmit,
     {},
     {
@@ -49,9 +53,23 @@ export const DefaultValuesForm = ({ onSubmit }) => {
 
           <ButtonWithMargin type="submit">Send</ButtonWithMargin>
 
-          <StyledButtonInline type="button" onClick={resetToInitialValues}>
+          <ButtonInlineWithMargin
+            type="button"
+            onClick={() => {
+              resetValues();
+            }}
+          >
+            Reset to defaults
+          </ButtonInlineWithMargin>
+
+          <ButtonInlineWithMargin
+            type="button"
+            onClick={() => {
+              resetValues({});
+            }}
+          >
             Reset
-          </StyledButtonInline>
+          </ButtonInlineWithMargin>
         </form>
 
         <StyledPre>{JSON.stringify(values, null, 2)}</StyledPre>
