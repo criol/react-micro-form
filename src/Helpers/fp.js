@@ -1,5 +1,5 @@
 export function flow(...funcs) {
-  return function(arg) {
+  return arg => {
     let result = arg;
 
     funcs.forEach(func => {
@@ -11,7 +11,7 @@ export function flow(...funcs) {
 }
 
 export function split(...funcs) {
-  return function(arg) {
+  return arg => {
     let result = [];
 
     funcs.forEach(func => {
@@ -23,31 +23,31 @@ export function split(...funcs) {
 }
 
 export function map(mapperFunc) {
-  return function(array) {
+  return array => {
     return array.map(mapperFunc);
   };
 }
 
 export function some(filterFunc) {
-  return function(array) {
+  return array => {
     return array.some(filterFunc);
   };
 }
 
 export function reduce(reduceFunc, initValue) {
-  return function(array) {
+  return array => {
     return array.reduce(reduceFunc, initValue);
   };
 }
 
 export function filterOutValues(...values) {
-  return function(array) {
+  return array => {
     return array.filter(v => !values.includes(v));
   };
 }
 
 export function containsValues(value) {
-  return function(array) {
+  return array => {
     return array.includes(value);
   };
 }
@@ -75,7 +75,13 @@ export function combineObject([keyArr, valuesArr]) {
 }
 
 export function isEqualTo(...posibleValues) {
-  return function(value) {
+  return value => {
     return posibleValues.includes(value);
+  };
+}
+
+export function get(key) {
+  return value => {
+    return value[key];
   };
 }

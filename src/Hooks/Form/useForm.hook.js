@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useFormChecking } from './useFormChecking.hook';
 import { useImmutableHash } from '../Common/useImmutableHash.hook';
-import { isEqualTo, isArray } from '../../Helpers/fp';
+import { isEqualTo, isArray, flow, get } from '../../Helpers/fp';
 
-const isCheckbox = isEqualTo('checkbox');
+const isCheckbox = flow(
+  get('type'),
+  isEqualTo('checkbox'),
+);
+
 const noopChecker = () => ({});
 
 function toggleValueInArray(array, value) {
@@ -27,7 +31,7 @@ function skipTick() {
 
 export function useForm(
   callbacks,
-  { validate = noopChecker, warn = noopChecker },
+  { validate = noopChecker, warn = noopChecker } = {},
   initialValues = {},
 ) {
   const [values, setValues] = useState(initialValues);
@@ -70,8 +74,8 @@ export function useForm(
 
   const fields = {};
 
-  function registerInputType(fieldName, type) {
-    const checkbox = isCheckbox(type);
+  function registerInput(fieldName, inputNode) {
+    const checkbox = isCheckbox(inputNode);
 
     if (checkbox) {
       if (fields[fieldName]) {
@@ -193,7 +197,7 @@ export function useForm(
       warnings,
       status,
       getFieldStatus,
-      registerInputType,
+      registerInput,
     },
     handleSubmit,
     {

@@ -4,8 +4,12 @@ import styled from '@emotion/styled';
 import { ExampleFormContainer } from './Form/ExampleFormContainer';
 import { UserContactForm } from '../Forms/UserContactForm/UserContactForm';
 import { ContentToggler } from './ContentToggler/ContentToggler';
-import { DefaultValuesForm } from '../Forms/DefaultValuesForm/DefaultValuesForm';
-import { CheckRadioForm } from '../Forms/CheckRadioForm/CheckRadioForm';
+import {
+  DefaultValuesForm,
+  CheckRadioForm,
+  SelectForm,
+  CustomControlForm,
+} from '../Forms/Examples';
 
 const globalStyles = css`
   body {
@@ -47,6 +51,18 @@ const App = () => (
       <FormSubHeader>Checkboxes and radios</FormSubHeader>
       <ExampleFormContainer>
         {onChange => <CheckRadioForm onSubmit={onSubmit} onChange={onChange} />}
+      </ExampleFormContainer>
+
+      <FormSubHeader>Select fields</FormSubHeader>
+      <ExampleFormContainer>
+        {onChange => <SelectForm onSubmit={onSubmit} onChange={onChange} />}
+      </ExampleFormContainer>
+
+      <FormSubHeader>Custom control</FormSubHeader>
+      <ExampleFormContainer>
+        {onChange => (
+          <CustomControlForm onSubmit={onSubmit} onChange={onChange} />
+        )}
       </ExampleFormContainer>
     </ContentToggler>
   </React.Fragment>
