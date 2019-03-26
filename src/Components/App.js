@@ -49,13 +49,6 @@ const App = () => {
         label="Show other examples"
         labelNegative="Hide other examples"
       >
-        <FormSubHeader>Default values</FormSubHeader>
-        <ExampleFormContainer>
-          {onChange => (
-            <DefaultValuesForm onSubmit={onSubmit} onChange={onChange} />
-          )}
-        </ExampleFormContainer>
-
         {Object.entries(ExampleForms).map(([title, FormComponent]) => (
           <Fragment key={title}>
             <FormSubHeader>{title}</FormSubHeader>
