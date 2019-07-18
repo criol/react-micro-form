@@ -2,10 +2,10 @@
 // see the SINGLE IMPLEMENTATION section for details
 import React from 'react';
 import styled from '@emotion/styled';
-import { useField, useForm } from '../../Hooks/Form';
-import { FormControl } from '../../Components/Form/FormControl';
-import { StyledInput } from '../../Components/StyledComponents/StyledInput';
-import { StyledButton } from '../../Components/StyledComponents/StyledButton';
+import { useField, useForm } from '@monorepo/hooks/Form';
+import { FormControl } from '../../Form/FormControl';
+import { StyledInput } from '../../StyledComponents/StyledInput';
+import { StyledButton } from '../../StyledComponents/StyledButton';
 
 import { validate } from './validate';
 import { FieldNames } from './constants';

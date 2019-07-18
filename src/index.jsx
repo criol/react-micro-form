@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react';
 import { Global, css } from '@emotion/core';
 import styled from '@emotion/styled';
-import { ExampleFormContainer } from './Form/ExampleFormContainer';
-import { UserContactForm } from '../Forms/UserContactForm/UserContactForm';
-import { ContentToggler } from './ContentToggler/ContentToggler';
 import {
   DefaultValuesForm,
   CheckRadioForm,
   SelectForm,
   CustomControlForm,
   WarningsForm,
-} from '../Forms/Examples';
+  UserContactForm
+} from './Examples';
+import { ExampleFormContainer } from './Form/ExampleFormContainer';
+import { ContentToggler } from './ContentToggler/ContentToggler';
 
 const globalStyles = css`
   body {
@@ -40,9 +40,9 @@ const App = () => {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Global styles={globalStyles} />
-      <FormHeader>Update Your Details</FormHeader>
+      <FormHeader> fdf Update Your Details</FormHeader>
       <UserContactForm onSubmit={onSubmit} />
 
       <ContentToggler
@@ -60,7 +60,7 @@ const App = () => {
           </Fragment>
         ))}
       </ContentToggler>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

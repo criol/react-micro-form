@@ -1,10 +1,10 @@
-import { createChecker } from '../../Helpers/Validate/createChecker';
+import { createChecker } from '@monorepo/hooks/Helpers/Validate/createChecker';
 import {
   required,
   stringOnly,
   numberOnly,
   phoneNumber,
-} from '../../Helpers/Validate/validators';
+} from '@monorepo/hooks/Helpers/Validate/validators';
 import { FieldNames } from './constants';
 
 export const validate = createChecker({

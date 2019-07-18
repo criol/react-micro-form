@@ -1,5 +1,5 @@
 import React from 'react';
-import { useForm, useField } from '../../Hooks/Form';
+import { useForm, useField } from '@monorepo/hooks/Form';
 
 export const CheckRadioForm = ({ onSubmit, onChange }) => {
   const [form, handleSubmit] = useForm({ onSubmit, onChange }, {});

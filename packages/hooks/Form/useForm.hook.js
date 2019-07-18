@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useFormChecking } from './useFormChecking.hook';
 import { useImmutableHash } from '../Common/useImmutableHash.hook';
-import { isEqualTo, isArray, flow, get } from '../../Helpers/fp';
+import { isEqualTo, isArray, flow, get } from '../Helpers/fp';
 
 const isCheckbox = flow(
   get('type'),

@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { isArray } from '../../Helpers/fp';
+import { isArray } from '../Helpers/fp';
 
 const SELECT_MULTIPLE = 'select-multiple';
 

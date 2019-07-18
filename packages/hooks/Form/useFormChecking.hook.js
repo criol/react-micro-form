@@ -9,7 +9,7 @@ import {
   objectKeys,
   objectValues,
   castToArray,
-} from '../../Helpers/fp';
+} from '../Helpers/fp';
 
 const errorFilterer = flow(
   split(
