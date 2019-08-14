@@ -1,22 +1,23 @@
 {
   "name": "react-micro-form",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Super small form library for react",
   "author": "Gobedashvili Bagrat",
   "license": "MIT",
   "private": true,
   "main": "readme.md",
-  "files" : ["readme.md"],
+  "files": [
+    "readme.md"
+  ],
+  "scripts": {
+    "update:version": "lerna version --no-push"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/criol/react-micro-form"
   },
-  "scripts": {
-    "dev": "parcel packages/examples/index.html --log-level 3 --open"
-  },
   "devDependencies": {
-    "lerna": "3.16.4",
-    "parcel-bundler": "^1.11.0"
+    "lerna": "3.16.4"
   },
   "workspaces": [
     "packages/*"
