@@ -1,0 +1,24 @@
+{
+  "name": "react-micro-form-examples",
+  "description": "Super small form library for react",
+  "author": "Gobedashvili Bagrat",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel index.html --log-level 3 --open"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.6",
+    "@emotion/styled": "^10.0.6",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "emotion": "^10.0.6",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-micro-form": "^0.0.1",
+    "src": "^1.1.2"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0"
+  }
+}

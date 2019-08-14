@@ -1,29 +1,24 @@
 {
-  "name": "hook-form",
-  "description": "AMBOSS Next Front-End Dev Task",
-  "author": "AMBOSS Next",
-  "scripts": {
-    "dev": "parcel index.html --log-level 3 --open"
-  },
-  "dependencies": {
-    "@monorepo/hooks": "^1.0.0",
-    "@emotion/core": "^10.0.6",
-    "@emotion/styled": "^10.0.6",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "emotion": "^10.0.6",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "src": "^1.1.2"
-  },
-  "devDependencies": {
-    "babel-core": "^6.26.3",
-    "parcel-bundler": "^1.11.0"
-  },
-  "version": "1.0.0",
-  "main": "src/index.js",
+  "name": "react-micro-form",
+  "description": "Super small form library for react",
+  "author": "Gobedashvili Bagrat",
   "license": "MIT",
   "private": true,
+  "main": "readme.md",
+  "files": [
+    "readme.md"
+  ],
+  "scripts": {
+    "update:version": "lerna version --no-push",
+    "publish": "lerna publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/criol/react-micro-form"
+  },
+  "devDependencies": {
+    "lerna": "3.16.4"
+  },
   "workspaces": [
     "packages/*"
   ]

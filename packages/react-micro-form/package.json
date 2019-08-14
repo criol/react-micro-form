@@ -1,16 +1,14 @@
 {
-  "description": "Super small form library for react",
-  "author": "Gobedashvili Bagrat",
   "name": "react-micro-form",
   "version": "0.0.1",
+  "description": "Super small form library for react",
+  "author": "Gobedashvili Bagrat",
   "license": "MIT",
-  "dependencies": {
-    "react": "^16.7.0"
-  },
-  "main": "readme.md",
-  "files" : ["readme.md"],
   "repository": {
     "type": "git",
     "url": "https://github.com/criol/react-micro-form"
+  },
+  "dependencies": {
+    "react": "^16.7.0"
   }
 }
