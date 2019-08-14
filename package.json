@@ -1,6 +1,5 @@
 {
   "name": "react-micro-form",
-  "version": "1.0.0",
   "description": "Super small form library for react",
   "author": "Gobedashvili Bagrat",
   "license": "MIT",
@@ -10,7 +9,8 @@
     "readme.md"
   ],
   "scripts": {
-    "update:version": "lerna version --no-push"
+    "update:version": "lerna version --no-push",
+    "publish": "lerna publish"
   },
   "repository": {
     "type": "git",
